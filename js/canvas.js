@@ -9,21 +9,26 @@ window.onload = function () {
   // D = Math.max(paper.view.getSize().width, paper.view.getSize().height);
   // D = Math.max(paper.view.getSize().width, paper.view.getSize().height);
 
-  mousePos = paper.view.center.add([view.bounds.width / 3, 100]);
-  position = paper.view.center;
+  // 确保 paper.view 已经正确初始化
+  if (paper.view) {
+    mousePos = paper.view.center.add([paper.view.bounds.width / 3, 100]);
+    position = paper.view.center;
+  }
 
   // Draw the BG
-  var background = new Path.Rectangle(view.bounds);
+  var background = new Path.Rectangle(paper.view.bounds);
   // background.fillColor = '#3B3251';
   buildStars();
   triangle = new Triangle(50);
   paper.view.draw();
 
   paper.view.onFrame = function (event) {
-    position = position.add((mousePos.subtract(position).divide(10)));
-    var vector = (view.center.subtract(position)).divide(10);
-    moveStars(vector.multiply(3));
-    triangle.update();
+    if (position && mousePos) {
+      position = position.add((mousePos.subtract(position).divide(10)));
+      var vector = (paper.view.center.subtract(position)).divide(10);
+      moveStars(vector.multiply(3));
+      triangle.update();
+    }
   };
 };
 // ---------------------------------------------------
@@ -33,7 +38,7 @@ window.onresize = function () {
   project.clear();
   // D = Math.max(paper.view.getSize().width, paper.view.getSize().height);
   // Draw the BG
-  var background = new Path.Rectangle(view.bounds);
+  var background = new Path.Rectangle(paper.view.bounds);
   // background.fillColor = '#3B3251';
   buildStars();
   triangle.build(50);
@@ -78,7 +83,7 @@ Triangle.prototype.build = function (a) {
   // });
   this.group = new Group({
     children: [],
-    position: view.center
+    position: paper.view.center
   });
 };
 
@@ -106,6 +111,10 @@ Triangle.prototype.rotate = function () {
 // ---------------------------------------------------
 window.onmousemove = function (event) {
   if (!event) return;
+  // 检查 mousePos 是否已经初始化
+  if (!mousePos) {
+    mousePos = new paper.Point(0, 0);
+  }
   mousePos.x = event.x;
   mousePos.y = event.y;
   triangle.rotate();
@@ -177,3 +186,4 @@ var moveStars = function (vector) {
     keepInView(item);
   }
 };
+
