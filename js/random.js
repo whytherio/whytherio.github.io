@@ -32,4 +32,4 @@ function initTexts() {
     });
 }
 
-window.onload = initTexts;
+window.addEventListener('load', initTexts);
