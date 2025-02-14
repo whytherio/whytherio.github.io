@@ -14,8 +14,9 @@
   justify-content: space-between;
   position: relative;
   display: flex;
-  width: 750px;
-  height: 469px;
+  width: 100%;
+  min-height: 450px;
+  height: 40%;
   overflow: hidden;
 }
 
